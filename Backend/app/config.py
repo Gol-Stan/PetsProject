@@ -1,0 +1,21 @@
+import os
+from dotenv import load_dotenv
+from pathlib import Path
+from pydantic_settings import BaseSettings
+
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
+class Settings(BaseSettings):
+    POSTGRES_USER: str = "dev_user"
+    POSTGRES_PASSWORD: str = "dev_password"
+    POSTGRES_DB: str = "dev_db"
+    DATABASE_HOST: str = "localhost"
+    DATABASE_PORT: int = 5432
+    DATABASE_URL: str | None = None
+
+    class Config:
+        env_file = env_path
+        env_file_encoding = "utf-8"
+
+settings = Settings()
