@@ -3,6 +3,7 @@ services:
   backend:
     build: ./backend
     container_name: pets-backend
+    command: celery -A app.celery_worker.celery_app worker --loglevel=info
     env_file: .env
     depends_on:
       - db
