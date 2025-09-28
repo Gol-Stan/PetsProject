@@ -14,6 +14,14 @@ class Settings(BaseSettings):
     DATABASE_PORT: int = 5432
     DATABASE_URL: str | None = None
 
+    @property
+    def db_url(self) -> str:
+        return (
+            self.DATABASE_URL
+            or f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+               f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.POSTGRES_DB}"
+        )
+
     class Config:
         env_file = env_path
         env_file_encoding = "utf-8"

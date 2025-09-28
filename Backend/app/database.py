@@ -7,6 +7,6 @@ DATABASE_URL = settings.db_url
 
 engine = create_engine(DATABASE_URL, echo=True)
 
-SessionLocal = sessionmaker(autcommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base
+Base = declarative_base()
