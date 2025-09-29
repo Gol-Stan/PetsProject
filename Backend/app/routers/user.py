@@ -19,26 +19,27 @@ async def get_db():
 """ Register """
 @router.post("/register", response_model=schemas.user.UserRead, status_code=status.HTTP_201_CREATED)
 async def register(user_in: schemas.user.UserCreate, db: AsyncSession = Depends(get_db)):
-    db_user = await  crud_user.get_user_by_email(db, user_in.email)
+    db_user = await  crud_user.get_user_by_email(db, str(user_in.email))
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
     return await crud_user.create_user(db, user_in)
 
+""" Login """
 @router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     user = await crud_user.auth_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credantial",
+            detail="Invalid credential",
             headers={"WWW-Auth": "Bearer"},
         )
 
     access_token = create_access_token(subject=user.email)
     return {"access_token": {access_token}, "token_type": "bearer"}
 
-
+""" Token check"""
 async def get_current_user(token: str = Depends(oauth2_scheme), db:AsyncSession = Depends(get_db)):
     try:
         payload = decode_token(token)
@@ -60,6 +61,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db:AsyncSession 
 
     return user
 
+"""User data"""
 @router.get('/me', response_model=schemas.user.UserRead)
 async def read_users_me(current_user=Depends(get_current_user)):
     return current_user
