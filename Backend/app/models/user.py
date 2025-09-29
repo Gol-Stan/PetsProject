@@ -9,5 +9,6 @@ class User(Base):
     name = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
     phone = Column(String(100), nullable=True)
+    hashed_password = Column(String(256), nullable=False)
 
     pets = relationship("Pet", back_populates="owner")
