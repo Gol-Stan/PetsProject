@@ -24,3 +24,11 @@ async def create_user(db: AsyncSession, user_in: schemas.user.UserCreate):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_content.verify(plain_password, hashed_password)
+
+async def auth_user(db: AsyncSession, email: str, password: str):
+    user = await get_user_by_email(db, email)
+    if not user:
+        return None
+    if not verify_password(password, user.hashed_password):
+        return None
+    return user
