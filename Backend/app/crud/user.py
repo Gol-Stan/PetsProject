@@ -1,13 +1,15 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from app import models, schemas
 from passlib.context import CryptContext
 
 pwd_content = CryptContext(schemes=["bcrypt"], deprecated ="auto")
 
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
+async def get_user_by_email(db: AsyncSession, email: str):
+    result = await db.execute(select(models.User).filter(models.User.email == email))
+    return result.scalars().first()
 
-def create_user(db: Session, user_in: schemas.User.UserCreate):
+async def create_user(db: AsyncSession, user_in: schemas.user.UserCreate):
     hashed_pw = pwd_content.hash(user_in.password)
     db_user = models.User(
         name=user_in.name,
@@ -16,8 +18,8 @@ def create_user(db: Session, user_in: schemas.User.UserCreate):
         hashed_password = hashed_pw
     )
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
     return db_user
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:

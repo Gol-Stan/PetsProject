@@ -3,11 +3,14 @@ import sys
 import pathlib
 
 from logging.config import fileConfig
+from app.config import settings
 
 from sqlalchemy import engine_from_config, create_engine
 from sqlalchemy import pool
 
 from alembic import context
+
+DATABASE_URL = settings.db_url.replace("asyncpg", "psycopg2")
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent / "Backend"
 sys.path.insert(0, str(BASE_DIR))
@@ -50,7 +53,7 @@ def run_migrations_offline() -> None:
     """
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=DATABASE_URL,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},

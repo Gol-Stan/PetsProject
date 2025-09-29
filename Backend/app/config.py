@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     def db_url(self) -> str:
         return (
             self.DATABASE_URL
-            or f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            or f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
                f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.POSTGRES_DB}"
         )
 

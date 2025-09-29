@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from jose import jwt
+from jose import jwt, JWTError
 import os
 
 
@@ -16,4 +16,7 @@ def create_access_token(subject: str, expires_delta: timedelta | None = None) ->
     return encoded_jwt
 
 def decode_token(token: str) -> dict:
-    return  jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        return  jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError as e:
+        raise ValueError(f'Invalid token: {e}')
