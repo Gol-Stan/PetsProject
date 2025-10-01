@@ -14,6 +14,7 @@ class Pet(Base):
     birth_date = Column(Date, nullable=False)
     vaccine = Column(String(200), nullable=True)
     img = Column(String(200), nullable=True)
+    qr_code = Column(String(200), nullable=False, unique=True)
 
     owner = relationship("User", back_populates="pets")
     breed = relationship("Breed")
