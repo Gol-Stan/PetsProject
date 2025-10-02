@@ -1,20 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import AsyncSessionLocal
-from app.utils.jwt_handler import create_access_token, decode_token
 from app import schemas
 from app.crud import user as crud_user
+from app.database import AsyncSessionLocal
+from app.utils.jwt_handler import create_access_token, decode_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
-async def get_db():
-    async with AsyncSession() as db:
-        yield db
 
 """ Register """
 @router.post("/register", response_model=schemas.user.UserRead, status_code=status.HTTP_201_CREATED)
@@ -37,31 +32,11 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         )
 
     access_token = create_access_token(subject=user.email)
-    return {"access_token": {access_token}, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer"}
 
-""" Token check"""
-async def get_current_user(token: str = Depends(oauth2_scheme), db:AsyncSession = Depends(get_db)):
-    try:
-        payload = decode_token(token)
-        email: str = payload.get("sub")
-        if email is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-            )
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-        )
 
-    user = await crud_user.get_user_by_email(db, email)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,detail="User not found"
-        )
-
-    return user
 
 """User data"""
 @router.get('/me', response_model=schemas.user.UserRead)
-async def read_users_me(current_user=Depends(get_current_user)):
+async def read_users_me(current_user: schemas.user.UserRead = Depends(get_current_user)):
     return current_user

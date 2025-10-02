@@ -5,16 +5,17 @@ from app import models, schemas
 from app.services import qr
 
 """ Create Pet """
-async def create_pet(pet_in: schemas.pet.PetBase, owner_id: int, db: AsyncSession):
+async def create_pet(db: AsyncSession, pet_in: schemas.pet.PetBase, owner_id: int):
+
     qr_code = qr.generate_code()
     new_pet = models.Pet(
         name=pet_in.name,
         gender=pet_in.gender,
         birth_date=pet_in.birth_date,
-        bred_id=pet_in.breed_id,
+        breed_id=pet_in.breed_id,
         vaccine=pet_in.vaccine,
         owner_id=owner_id,
-        qr_code=pet_in.qr_code
+        qr_code=qr_code
     )
     db.add(new_pet)
     await db.commit()
