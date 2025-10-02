@@ -2,13 +2,16 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 
+from app.schemas.user import OwnerPublic, OwnerPrivate
+
+
 class PetBase(BaseModel):
     name: str
     gender: str
     birth_date: date
-    breed: str
+    breed_id: int
     vaccine: Optional[str]
-    qr: str
+    qr_code: str
 
 class PetList(PetBase):
     id: int
@@ -16,16 +19,16 @@ class PetList(PetBase):
     class Config:
         orm_mode = True
 
-class OwnerDetail(BaseModel):
-    name: str
-    phone: str
+class PetPublic(PetBase):
+    id: int
+    owner: OwnerPublic
 
     class Config:
         orm_mode = True
 
-class PetDetail(PetBase):
+class PetPrivate(PetBase):
     id: int
-    owner: OwnerDetail
+    owner: OwnerPrivate
 
     class Config:
         orm_mode = True
