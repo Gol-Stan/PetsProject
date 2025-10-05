@@ -11,6 +11,7 @@ class PetBase(BaseModel):
     birth_date: date
     breed_id: int
     vaccine: Optional[str]
+    img: str
     qr_code: str
 
 class PetList(PetBase):
