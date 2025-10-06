@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from watchfiles import awatch
+from fastapi.staticfiles import StaticFiles
 
 from app.database import get_db
 from app import models, config
@@ -11,6 +11,7 @@ import asyncio
 
 app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/")
 async def read_users(db: AsyncSession = Depends(get_db)):

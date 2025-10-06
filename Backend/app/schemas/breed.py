@@ -6,6 +6,9 @@ class Breed(BaseModel):
     image: str
     description: str
 
+class BreedCreate(Breed):
+    pass
+
 class BreedList(Breed):
     id: int
 

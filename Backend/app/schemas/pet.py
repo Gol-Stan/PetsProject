@@ -10,12 +10,21 @@ class PetBase(BaseModel):
     gender: str
     birth_date: date
     breed_id: int
-    vaccine: Optional[str]
-    img: str
-    qr_code: str
+    vaccine: Optional[str] = None
+    img: Optional[str] = None
+
+class PetCreate(BaseModel):
+    name: str
+    gender: str
+    birth_date: date
+    breed_id: int
+    vaccine: Optional[str] = None
+    img: Optional[str] = None
+
 
 class PetList(PetBase):
     id: int
+    qr_code: str
 
     class Config:
         orm_mode = True

@@ -13,6 +13,10 @@ async def get_user_by_email(db: AsyncSession, email: str):
 
 
 async def create_user(db: AsyncSession, user_in: schemas.user.UserCreate):
+    existing = await get_user_by_email(db, user_in.email)
+    if existing:
+        raise ValueError("User already exists")
+
     hashed_pw = pwd_content.hash(user_in.password)
     db_user = models.User(
         name=user_in.name,

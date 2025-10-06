@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from jose import JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,6 +7,7 @@ from app import schemas
 from app.crud import user as crud_user
 from app.database import AsyncSessionLocal
 from app.utils.jwt_handler import create_access_token, decode_token
+from app.dependencies import get_db, get_current_user, get_current_user_opt
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -21,9 +22,9 @@ async def register(user_in: schemas.user.UserCreate, db: AsyncSession = Depends(
     return await crud_user.create_user(db, user_in)
 
 """ Login """
-@router.post("/login")
+@router.post("/login", response_model=schemas.user.Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
-    user = await crud_user.auth_user(db, form_data.username, form_data.password)
+    user = await crud_user.auth_user(db, email=form_data.username, password=form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

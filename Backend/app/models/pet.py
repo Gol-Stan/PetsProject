@@ -4,7 +4,7 @@ from ..database import Base
 
 
 class Pet(Base):
-    __tablename__ = "pet"
+    __tablename__ = "pets"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
@@ -14,7 +14,7 @@ class Pet(Base):
     birth_date = Column(Date, nullable=False)
     vaccine = Column(String(200), nullable=True)
     img = Column(String(200), nullable=True)
-    qr_code = Column(String(200), nullable=False, unique=True)
+    qr_code = Column(String(200), nullable=False, unique=True, index=True)
 
     owner = relationship("User", back_populates="pets")
     breed = relationship("Breed")

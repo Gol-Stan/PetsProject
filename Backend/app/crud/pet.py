@@ -17,6 +17,7 @@ async def create_pet(db: AsyncSession, pet_in: schemas.pet.PetBase, owner_id: in
         owner_id=owner_id,
         qr_code=qr_code
     )
+
     db.add(new_pet)
     await db.commit()
     await db.refresh(new_pet)
@@ -42,8 +43,10 @@ async def update_pet(db: AsyncSession, pet_id: int, pet_in: schemas.pet.PetBase,
     if not pet or pet.owner_id != owner_id:
         return None
 
+    allowed_fields = {"name", "gender", "birth_date", "vaccine", "img", "breed_id"}
     for key, value in pet_in.dict().items():
-        setattr(pet, key, value)
+        if key in allowed_fields:
+            setattr(pet, key, value)
 
     await db.commit()
     await db.refresh(pet)
