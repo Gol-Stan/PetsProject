@@ -4,6 +4,9 @@ import pathlib
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(BASE_DIR))
 
+from dotenv import load_dotenv
+load_dotenv(".env")
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
