@@ -6,6 +6,7 @@ from passlib.context import CryptContext
 
 pwd_content = CryptContext(schemes=["bcrypt"], deprecated ="auto")
 
+MAX_BCRYPT_LEN = 72
 
 async def get_user_by_email(db: AsyncSession, email: str):
     result = await db.execute(select(models.User).where(models.User.email == email))
@@ -17,7 +18,8 @@ async def create_user(db: AsyncSession, user_in: schemas.user.UserCreate):
     if existing:
         raise ValueError("User already exists")
 
-    hashed_pw = pwd_content.hash(user_in.password)
+    password_to_hash = user_in.password[:MAX_BCRYPT_LEN]
+    hashed_pw = pwd_content.hash(password_to_hash)
     db_user = models.User(
         name=user_in.name,
         email=user_in.email,

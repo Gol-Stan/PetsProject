@@ -1,5 +1,5 @@
+import pytest_asyncio
 import pytest
-from app.schemas.user import UserRead
 
 @pytest.mark.asyncio
 async def test_register_user(client):
@@ -13,8 +13,17 @@ async def test_register_user(client):
 
 @pytest.mark.asyncio
 async def test_login_user(client):
-    await client.post("/auth/register", json={"name": "Any", "email": "any@test.com", "password": "secret"})
+
+    await client.post("/auth/register", json={
+        "name": "Any",
+        "email": "any@test.com",
+        "password": "secret"
+    })
+
+
     login_data = {"username": "any@test.com", "password": "secret"}
     response = await client.post("/auth/login", data=login_data)
+
     assert response.status_code == 200
-    assert "access_token" in response.json()
+    data = response.json()
+    assert "access_token" in data

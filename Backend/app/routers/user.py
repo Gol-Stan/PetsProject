@@ -9,7 +9,7 @@ from app.database import AsyncSessionLocal
 from app.utils.jwt_handler import create_access_token, decode_token
 from app.dependencies import get_db, get_current_user, get_current_user_opt
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(tags=["auth"])
 
 
 """ Register """

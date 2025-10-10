@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import schemas, crud
 from app.database import get_db
 
-router = APIRouter(prefix="/breeds", tags=["breeds"])
+router = APIRouter(tags=["breed"])
 
 
 @router.post("/", response_model=schemas.breed.BreedList, status_code=status.HTTP_201_CREATED)

@@ -5,11 +5,16 @@ from fastapi.staticfiles import StaticFiles
 
 from app.database import get_db
 from app import models, config
+from app.routers import user, pet, breed
 from app.celery_worker import add
 from app.redis_client import redis_client
 import asyncio
 
 app = FastAPI()
+
+app.include_router(user.router, prefix="/auth")
+app.include_router(pet.router, prefix="/pets")
+app.include_router(pet.router, prefix="/breed")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
