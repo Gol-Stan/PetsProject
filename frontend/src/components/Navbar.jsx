@@ -3,7 +3,6 @@ import {Component} from "react";
 
 export default function Navbar() {
     const links = [
-        {path: "/", label: "Home"},
         {path: "/mypets", label: "MyPets"},
         {path: "/breeds", label: "Breeds"},
         {path: "/adoption", label: "Adoption"},
