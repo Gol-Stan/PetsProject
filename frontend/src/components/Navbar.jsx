@@ -1,34 +1,15 @@
-import { NavLink} from "react-router-dom";
-import {Component} from "react";
+import { Link } from "react-router-dom";
 
-export default function Navbar() {
-    const links = [
-        {path: "/mypets", label: "MyPets"},
-        {path: "/breeds", label: "Breeds"},
-        {path: "/adoption", label: "Adoption"},
-        {path: "/training", label: "Training"},
-    ];
-
+export default function NavBar() {
     return (
-        <nav className="bg-blue-900 text-white py-4">
-            <div className="max-w-6xl mx-auto flex justify-between items-center px-4">
-                <h1 className="text-2xl font-bold">PetWorld</h1>
-                <div className="flex gap-6">
-                    {links.map(({path, label}) => (
-                        <NavLink
-                            key={path}
-                            to={path}
-                            className={({isActive}) =>
-                                isActive
-                                    ? "font-semibold underline"
-                                    : "hover:underline text-gray-200"
-                            }
-                        >
-                            {label}
-                        </NavLink>
-                    ))}
-                </div>
-            </div>
+        <nav className="bg-blue-800 text-white py-3">
+            <ul className="flex justify-center space-x-8">
+                <li><Link to="/" className="hover:underline">Главная</Link></li>
+                <li><Link to="/breeds" className="hover:underline">Породы</Link></li>
+                <li><Link to="/mypets" className="hover:underline">Мои питомцы</Link></li>
+                <li><Link to="/adoption" className="hover:underline">Усыновление</Link></li>
+                <li><Link to="/training" className="hover:underline">Дрессировка</Link></li>
+            </ul>
         </nav>
     );
 }
