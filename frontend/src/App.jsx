@@ -9,13 +9,13 @@ import MyPets from "./pages/MyPets";
 import Adoption from "./pages/Adoption";
 import Training from "./pages/Training";
 
+
 export default function App() {
     return (
         <Router>
             <div className="flex flex-col min-h-screen">
                 <Header />
                 <NavBar />
-
                 <main className="flex-grow max-w-6xl mx-auto mt-8 px-4">
                     <Routes>
                         <Route path="/" element={<Home />} />
