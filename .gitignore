@@ -8,20 +8,20 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-Backend/__pycache__/
+backend/__pycache__/
 Backend/*.pyc
 Backend/*.pyo
 Backend/*.pyd
 Backend/*.swp
 Backend/*.egg
 Backend/*.egg-info/
-Backend/dist/
-Backend/build/
+backend/dist/
+backend/build/
 
 # Virtual environment
-Backend/.venv/
-Backend/env/
-Backend/venv/
+backend/.venv/
+backend/env/
+backend/venv/
 .venv/
 env/
 venv/
@@ -37,5 +37,5 @@ poetry.lock
 node_modules/
 npm-debug.log
 yarn-error.log
-/Backend/.env
-/Backend/.env.test
+/backend/.env
+/backend/.env.test

@@ -4,7 +4,7 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import pool, create_engine
 
-BASE_DIR = pathlib.Path(__file__).resolve().parent.parent / "Backend"
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent / "backend"
 sys.path.insert(0, str(BASE_DIR))
 
 from app.config import settings
