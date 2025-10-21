@@ -2,9 +2,10 @@ import asyncio
 import os
 import pytest
 from httpx import AsyncClient
-from pydantic import with_config
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.testing import future
+from dotenv import load_dotenv
+
+load_dotenv('./')
 
 from app.main import app
 from app.database import Base, get_db
