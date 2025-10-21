@@ -6,15 +6,11 @@ from watchfiles import awatch
 
 from app import schemas
 from app.crud import user as crud_user
-from app.database import AsyncSessionLocal
+from app.database import AsyncSessionLocal, get_db
 from app.utils.jwt_handler import create_access_token, decode_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-
-async def get_db():
-    async with AsyncSessionLocal() as db:
-        yield db
 
 
 """ Token check"""

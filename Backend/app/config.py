@@ -3,9 +3,11 @@ from dotenv import load_dotenv
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = BASE_DIR / ".env"
 load_dotenv(dotenv_path=env_path)
+
 
 class Settings(BaseSettings):
     POSTGRES_USER: str = "dev_user"
@@ -15,8 +17,11 @@ class Settings(BaseSettings):
     DATABASE_PORT: int = 5432
     DATABASE_URL: str | None = None
 
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
     REDIS_URL: str = "redis://localhost:6379/0"
-    SECRET_KEY: str = "dev_secret_key"
 
     model_config = SettingsConfigDict(
         env_file=env_path,

@@ -4,7 +4,7 @@ from app import models, schemas
 from passlib.context import CryptContext
 
 
-pwd_content = CryptContext(schemes=["bcrypt"], deprecated ="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated ="auto")
 
 MAX_BCRYPT_LEN = 72
 
@@ -19,7 +19,7 @@ async def create_user(db: AsyncSession, user_in: schemas.user.UserCreate):
         raise ValueError("User already exists")
 
     password_to_hash = user_in.password[:MAX_BCRYPT_LEN]
-    hashed_pw = pwd_content.hash(password_to_hash)
+    hashed_pw = pwd_context.hash(password_to_hash)
     db_user = models.User(
         name=user_in.name,
         email=user_in.email,
@@ -31,9 +31,27 @@ async def create_user(db: AsyncSession, user_in: schemas.user.UserCreate):
     await db.refresh(db_user)
     return db_user
 
+async def update_user(db: AsyncSession, user_id: int, user_update: schemas.user.UserUpdate):
+    result = await db.execute(select(models.User).where(models.User.id == user_id))
+    user = result.scalars().first()
+    if not user:
+        return None
+
+    update_data = user_update.dict(exclude_unset=True)
+
+    for field, value in update_data.items():
+        if field == "password" and value:
+            pass_to_hash = value[:MAX_BCRYPT_LEN]
+            user.hashed_password = pwd_context.hash(pass_to_hash)
+        elif hasattr(user, field) and value is not None:
+            setattr(user, field, value)
+
+    await db.commit()
+    await db.refresh(user)
+    return user
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_content.verify(plain_password, hashed_password)
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 async def auth_user(db: AsyncSession, email: str, password: str):

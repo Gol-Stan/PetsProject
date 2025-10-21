@@ -13,7 +13,7 @@ class PetBase(BaseModel):
     vaccine: Optional[str] = None
     img: Optional[str] = None
 
-class PetCreate(BaseModel):
+class PetCreate(PetBase):
     pass
 
 class PetUpdate(BaseModel):
