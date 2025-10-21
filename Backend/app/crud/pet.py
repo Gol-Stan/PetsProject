@@ -37,16 +37,17 @@ async def get_my_pets(db:AsyncSession, owner_id: int):
     return result.scalars().all()
 
 """ Update pet info """
-async def update_pet(db: AsyncSession, pet_id: int, pet_in: schemas.pet.PetBase, owner_id: int):
+async def update_pet(db: AsyncSession, pet_id: int, pet_in: schemas.pet.PetUpdate, owner_id: int):
     result = await db.execute(select(models.Pet).where(models.Pet.id == pet_id))
     pet = result.scalars().first()
     if not pet or pet.owner_id != owner_id:
         return None
 
-    allowed_fields = {"name", "gender", "birth_date", "vaccine", "img", "breed_id"}
-    for key, value in pet_in.dict().items():
-        if key in allowed_fields:
-            setattr(pet, key, value)
+    # Обновляем только указанные поля
+    update_data = pet_in.dict(exclude_unset=True)
+    for field, value in update_data.items():
+        if hasattr(pet, field):
+            setattr(pet, field, value)
 
     await db.commit()
     await db.refresh(pet)

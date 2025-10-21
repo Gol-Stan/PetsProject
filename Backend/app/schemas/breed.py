@@ -3,14 +3,19 @@ from typing import Optional
 
 class Breed(BaseModel):
     name: str
-    image: str
+    img: str
     description: str
 
 class BreedCreate(Breed):
     pass
 
+class BreedUpdate(BaseModel):
+    name: Optional[str] = None
+    img: Optional[str] = None
+    description: Optional[str] = None
+
 class BreedList(Breed):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

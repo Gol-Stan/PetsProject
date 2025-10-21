@@ -8,26 +8,37 @@ router = APIRouter(tags=["breed"])
 
 @router.post("/", response_model=schemas.breed.BreedList, status_code=status.HTTP_201_CREATED)
 async def create_breed(breed_in: schemas.breed.BreedCreate, db: AsyncSession = Depends(get_db)):
-    return await crud.breed.create_breed(db, breed_in)
+    try:
+        breed = await  crud.breed.create_breed(db, breed_in)
+        return breed
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
 
 
 @router.get("/", response_model=list[schemas.breed.BreedList])
 async def list_breeds(db: AsyncSession = Depends(get_db)):
     breeds = await crud.breed.get_all_breeds(db)
-    return [schemas.breed.BreedList.from_orm(b) for b in breeds]
+    return breeds
 
 
 @router.put("/{breed_id}", response_model=schemas.breed.BreedList)
-async def update_breed(breed_id: int, breed_in: schemas.breed.Breed, db: AsyncSession = Depends(get_db)):
-    breed = await crud.breed.update_breed(db, breed_id, breed_in)
-    if not breed:
-        raise HTTPException(status_code=404, detail="Breed not found")
-    return breed
+async def update_breed(breed_id: int, breed_in: schemas.breed.BreedUpdate, db: AsyncSession = Depends(get_db)):
+    try:
+        breed = await crud.breed.update_breed(db, breed_id, breed_in)
+        if not breed:
+            raise HTTPException(status_code=404, detail="Breed not found")
+        return breed
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))
+
 
 
 @router.delete("/{breed_id}")
 async def delete_breed(breed_id: int, db: AsyncSession = Depends(get_db)):
-    breed = await crud.breed.delete_breed(db, breed_id)
-    if not breed:
-        raise HTTPException(status_code=404, detail="Breed not found")
-    return {"message": f"Breed with id {breed_id} deleted"}
+    try:
+        breed = await crud.breed.delete_breed(db, breed_id)
+        if not breed:
+            raise HTTPException(status_code=404, detail="Breed not found")
+        return {"message": f"Breed with id {breed_id} deleted"}
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=str(err))

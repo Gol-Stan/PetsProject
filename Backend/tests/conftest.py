@@ -6,7 +6,7 @@ import pytest_asyncio
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from app.main import app
-from app.database import Base, get_async_session
+from app.database import Base, get_db
 
 # ---- Для Windows + asyncpg ----
 if os.name == "nt":
@@ -17,7 +17,7 @@ TEST_DB_USER = os.getenv("DB_USER", "postgres")
 TEST_DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
 TEST_DB_HOST = os.getenv("DB_HOST", "localhost")  # контейнер Docker должен быть доступен
 TEST_DB_PORT = os.getenv("DB_PORT", "5432")
-TEST_DB_NAME = os.getenv("DB_NAME", "test_db")
+TEST_DB_NAME = os.getenv("DB_NAME", "pets_test")
 
 DATABASE_URL = f"postgresql+asyncpg://{TEST_DB_USER}:{TEST_DB_PASSWORD}@{TEST_DB_HOST}:{TEST_DB_PORT}/{TEST_DB_NAME}"
 
@@ -40,7 +40,7 @@ async def client(async_session: AsyncSession):
     async def override_get_session():
         yield async_session
 
-    app.dependency_overrides[get_async_session] = override_get_session
+    app.dependency_overrides[get_db] = override_get_session
 
     async with AsyncClient(app=app, base_url="http://localhost:8000") as c:
         yield c

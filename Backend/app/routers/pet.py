@@ -5,7 +5,7 @@ from app import schemas, crud, models
 from app.database import get_db
 from app.dependencies import get_current_user, get_current_user_opt
 
-router = APIRouter(tags=["Pets"])
+router = APIRouter(tags=["pets"])
 
 
 @router.post("/", response_model=schemas.pet.PetPrivate)

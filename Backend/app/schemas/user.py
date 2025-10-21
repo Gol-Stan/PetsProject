@@ -9,14 +9,20 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: constr(max_length=72)
+    password: str
+
+
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    password: Optional[str] = None
 
 
 class UserRead(UserBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class OwnerPublic(BaseModel):
@@ -24,7 +30,7 @@ class OwnerPublic(BaseModel):
     phone: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class OwnerPrivate(BaseModel):
@@ -33,7 +39,7 @@ class OwnerPrivate(BaseModel):
     email: EmailStr
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Token(BaseModel):
