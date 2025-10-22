@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     REDIS_URL: str = "redis://localhost:6379/0"
 
+    MODE: str = "DEV"
+
     model_config = SettingsConfigDict(
         env_file=env_path,
         env_file_encoding="utf-8",
