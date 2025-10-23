@@ -32,3 +32,28 @@ async def test_login_user(async_client):
     assert "access_token" in data
     assert data["token_type"] == "bearer"
 
+
+@pytest.mark.asyncio
+async def test_me(async_client):
+    user_data = {
+        "name": "Test User",
+        "email": "me@example.com",
+        "password": "54345"
+    }
+    await async_client.post("/auth/register", json=user_data)
+
+    login_data = {
+        "email": "login@example.com",
+        "password": "54321"
+    }
+    login_response = await async_client.post("/auth/login", data=login_data)
+    token = login_response.json()["access_token"]
+
+    response = await async_client.get(
+        "/auth/me",
+        headers={"Authorization": f"Bearer {token}"}
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "me@example.com"
+
