@@ -44,7 +44,7 @@ async def test_me(async_client):
 
     login_data = {
         "email": "login@example.com",
-        "password": "54321"
+        "password": "54345"
     }
     login_response = await async_client.post("/auth/login", data=login_data)
     token = login_response.json()["access_token"]
