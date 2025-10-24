@@ -46,3 +46,15 @@ async def get_current_user_opt( token: str = Depends(oauth2_scheme), db: AsyncSe
         return None
 
     return await crud_user.get_user_by_email(db, email)
+
+
+async def get_current_admin(
+    current_user = Depends(get_current_user),  # существующая зависимость
+    db: AsyncSession = Depends(get_db)
+):
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions"
+        )
+    return current_user

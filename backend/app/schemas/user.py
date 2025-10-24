@@ -10,7 +10,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-
+    is_admin: bool = False
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
@@ -21,7 +21,7 @@ class UserUpdate(BaseModel):
 
 class UserRead(UserBase):
     id: int
-
+    is_admin: bool = False
     class Config:
         from_attributes = True
 
