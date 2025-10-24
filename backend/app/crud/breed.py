@@ -11,7 +11,7 @@ async def create_breed(db: AsyncSession, breed_in: schemas.breed.Breed):
 
     new_breed = models.Breed(
         name=breed_in.name,
-        image=breed_in.img,
+        img=breed_in.img,
         description=breed_in.description
     )
     db.add(new_breed)

@@ -14,7 +14,13 @@ class PetBase(BaseModel):
     img: Optional[str] = None
 
 class PetCreate(PetBase):
-    pass
+    class PetCreate(BaseModel):
+        name: str
+        gender: str
+        birth_date: date
+        breed_id: int
+        vaccine: Optional[str] = None
+        img: Optional[str] = None
 
 class PetUpdate(BaseModel):
     name: Optional[str] = None

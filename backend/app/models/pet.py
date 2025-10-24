@@ -13,7 +13,7 @@ class Pet(Base):
     gender = Column(String(2), nullable=False)
     birth_date = Column(Date, nullable=False)
     vaccine = Column(String(200), nullable=True)
-    img = Column(String(200), nullable=True)
+    img = Column(String(500), nullable=True)
     qr_code = Column(String(200), nullable=False, unique=True, index=True)
 
     owner = relationship("User", back_populates="pets")

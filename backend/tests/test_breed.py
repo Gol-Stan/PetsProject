@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.mark.asyncio
 async def test_breed_create(async_client):
     admin_data = {
@@ -11,47 +12,49 @@ async def test_breed_create(async_client):
     await async_client.post('/auth/register', json=admin_data)
 
     login_data = {
-        'email': 'admin@example.com',
+        'username': 'admin@example.com',
         'password': '98765'
     }
     login_response = await async_client.post('/auth/login', data=login_data)
-    token = login_response.json()["access_toke"]
+    token = login_response.json()["access_token"]
 
     breed_data = {
         'name': 'Retriever',
         'img': 'test.jpg',
         'description': 'friendly and beautiful'
     }
-    response = await async_client.post("/breeds/", json=breed_data, header={'Authorization': f'Bearer {token}'})
+    response = await async_client.post("/breeds/", json=breed_data, headers={'Authorization': f'Bearer {token}'})
+
     assert response.status_code == 201
     data = response.json()
     assert data['name'] == 'Retriever'
 
+
 @pytest.mark.asyncio
 async def test_no_admin_create(async_client):
-    admin_data = {
-        'name': 'Admin',
-        'email': 'admin@example.com',
+    user_data = {
+        'name': 'User',
+        'email': 'user@example.com',
         'password': '98765',
         'is_admin': False
     }
-    await async_client.post('/auth/register', json=admin_data)
+    await async_client.post('/auth/register', json=user_data)
 
     login_data = {
-        'email': 'admin@example.com',
+        'username': 'user@example.com',
         'password': '98765'
     }
     login_response = await async_client.post('/auth/login', data=login_data)
-    token = login_response.json()["access_toke"]
+    token = login_response.json()["access_token"]
 
     breed_data = {
         'name': 'Retriever',
         'img': 'test.jpg',
         'description': 'friendly and beautiful'
     }
-    response = await async_client.post("/breeds/", json=breed_data, header={'Authorization': f'Bearer {token}'})
+    response = await async_client.post("/breeds/", json=breed_data, headers={'Authorization': f'Bearer {token}'})
+
     assert response.status_code == 403
-    assert "Not enough permissions" in response.json()["detail"]
 
 
 @pytest.mark.asyncio

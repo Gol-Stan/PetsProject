@@ -23,7 +23,7 @@ async def test_login_user(async_client):
     await async_client.post("/auth/register", json=user_data)
 
     login_data = {
-        "email": "login@example.com",
+        "username": "login@example.com",
         "password": "54321"
     }
     response = await async_client.post("/auth/login", data=login_data)
@@ -43,7 +43,7 @@ async def test_me(async_client):
     await async_client.post("/auth/register", json=user_data)
 
     login_data = {
-        "email": "login@example.com",
+        "username": "me@example.com",
         "password": "54345"
     }
     login_response = await async_client.post("/auth/login", data=login_data)
