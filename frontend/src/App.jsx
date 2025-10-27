@@ -11,6 +11,7 @@ import Training from "./pages/Training";
 
 
 import background from "./assets/background_main.png";
+import Register from "./pages/Registration.jsx";
 
 export default function App() {
     return (
@@ -34,6 +35,7 @@ export default function App() {
                             <Route path="/mypets" element={<MyPets />} />
                             <Route path="/adoption" element={<Adoption />} />
                             <Route path="/training" element={<Training />} />
+                            <Route path="register" element={<Register />} />
                         </Routes>
                     </main>
                     <Footer />

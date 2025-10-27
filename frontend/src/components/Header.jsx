@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import background from "../assets/background.jpg";
 
@@ -19,6 +20,10 @@ export default function Header() {
     };
 
     const handleLogout = () => setUser("");
+
+    const handleRegister = () => {
+        alert("Registration")
+    }
 
     return (
         <header
@@ -79,6 +84,13 @@ export default function Header() {
                                             className="bg-orange-400 text-white px-3 py-2 rounded hover:bg-orange-600 transition"
                                         >
                                             Login
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleRegister}
+                                            className="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 transition"
+                                            >
+                                            <Link to="/register">Register</Link>
                                         </button>
                                     </form>
                                 </div>
