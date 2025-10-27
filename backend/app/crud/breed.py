@@ -4,7 +4,7 @@ from app import models, schemas
 from app.models import Breed
 
 """ Breed creation """
-async def create_breed(db: AsyncSession, breed_in: schemas.breed.Breed):
+async def create_breed(db: AsyncSession, breed_in: schemas.breed.BreedCreate):
     existing = await db.execute(select(models.Breed).where(models.Breed.name == breed_in.name))
     if existing.scalars().first():
         raise ValueError("Breed with this name already exists")
@@ -31,7 +31,7 @@ async def update_breed(db: AsyncSession, breed_id: int, breed_in: schemas.breed.
     if breed_in.name is not None:
         breed.name = breed_in.name
     if breed_in.img is not None:
-        breed.image = breed_in.img
+        breed.img = breed_in.img
     if breed_in.description is not None:
         breed.description = breed_in.description
 
@@ -41,7 +41,7 @@ async def update_breed(db: AsyncSession, breed_id: int, breed_in: schemas.breed.
 
 """ Get breed by id """
 async def get_breed_by_id(db: AsyncSession, breed_id: int):
-    result = await db.execute(select(models.Breed).where(models.Pet.breed_id == breed_id))
+    result = await db.execute(select(models.Breed).where(models.Breed.id == breed_id))
     return result.scalars().first()
 
 

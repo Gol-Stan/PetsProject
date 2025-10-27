@@ -8,7 +8,7 @@ class Pet(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
-    breed_id = Column(Integer, ForeignKey("breed.id"))
+    breed_id = Column(Integer, ForeignKey("breed.id", ondelete="RESTRICT"))
     owner_id = Column(Integer, ForeignKey("users.id"))
     gender = Column(String(2), nullable=False)
     birth_date = Column(Date, nullable=False)
