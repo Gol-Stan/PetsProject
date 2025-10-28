@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from ..database import Base
 
 
@@ -8,5 +8,5 @@ class Breed(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False, unique=True)
     img = Column(String(500), nullable=False)
-    description = Column(String(500), nullable=False)
+    description = Column(Text, nullable=False)
 
