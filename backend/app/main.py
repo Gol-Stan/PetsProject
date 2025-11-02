@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import get_db
 from app import models, config
@@ -12,17 +13,34 @@ import asyncio
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(user.router, prefix="/auth")
 app.include_router(pet.router, prefix="/pets")
 app.include_router(breed.router, prefix="/breeds")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
+
 @app.get("/")
+async def root():
+    return {"message": "FastAPI работает! Перейдите на /docs для документации"}
+
+"""@app.get("/")
 async def read_users(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(models.User))
     users = result.scalars().all()
-    return users
+    return users """
 
 
 @app.get("/db-info")
