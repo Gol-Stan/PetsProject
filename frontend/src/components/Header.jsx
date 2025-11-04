@@ -33,12 +33,12 @@ export default function Header() {
             }}
         >
             <div className="w-full flex justify-between items-center px-12 relative">
-
-                <div className="flex items-center gap-3">
-                    <img src={logo} alt="PetZone Logo" className="w-12 h-12 object-contain" />
-                    <h1 className="text-3xl font-bold text-gray-800">PetWorld</h1>
-                </div>
-
+                <Link to="/">
+                    <div className="flex items-center gap-3">
+                        <img src={logo} alt="PetZone Logo" className="w-12 h-12 object-contain" />
+                        <h1 className="text-3xl font-bold text-gray-800">PetWorld</h1>
+                    </div>
+                </Link>
 
                 <div className="relative">
                     {user ? (
