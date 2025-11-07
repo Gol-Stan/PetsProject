@@ -1,29 +1,54 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+// src/components/Header.jsx
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser, getCurrentUser } from "../api/authApi";
 import logo from "../assets/logo.png";
 import background from "../assets/background.jpg";
 
 export default function Header() {
     const [user, setUser] = useState("");
-    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showLogin, setShowLogin] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    // Загружаем пользователя при загрузке компонента
+    useEffect(() => {
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+            setUser(currentUser);
+        }
+    }, []);
+
+    const handleLogin = async (e) => {
         e.preventDefault();
-        if (name.trim() && password.trim()) {
-            setUser(name);
+        try {
+            const data = await loginUser({ email, password });
+            localStorage.setItem("access_token", data.access_token);
+
+            localStorage.setItem("username", data.name || email);
+            setUser(data.name || email);
+
             setShowLogin(false);
-            setName("");
+            setEmail("");
             setPassword("");
+            setError("");
+        } catch (err) {
+            setError(err.detail || "Login failed");
         }
     };
 
-    const handleLogout = () => setUser("");
+    const handleLogout = () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("username");
+        setUser("");
+    };
 
-    const handleRegister = () => {
-        alert("Registration")
-    }
+    const handleRegisterClick = () => {
+        setShowLogin(false); // Закрываем попап логина
+        navigate("/register"); // Переходим на страницу регистрации
+    };
 
     return (
         <header
@@ -43,8 +68,8 @@ export default function Header() {
                 <div className="relative">
                     {user ? (
                         <div className="flex items-center gap-4">
-                            <p className="text-white">
-                                Good to see you, <span className="font-semibold">{user}</span>!
+                            <p className="text-white bg-black bg-opacity-50 px-3 py-1 rounded">
+                                Welcome, <span className="font-semibold">{user}</span>!
                             </p>
                             <button
                                 onClick={handleLogout}
@@ -63,14 +88,17 @@ export default function Header() {
                             </button>
 
                             {showLogin && (
-                                <div className="absolute right-0 mt-3 bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-64 animate-fadeIn">
+                                <div className="absolute right-0 mt-3 bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-80 z-50">
                                     <form onSubmit={handleLogin} className="flex flex-col gap-3">
+                                        <h3 className="text-lg font-semibold text-center">Login</h3>
+
                                         <input
                                             type="email"
                                             placeholder="Email"
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                            required
                                         />
                                         <input
                                             type="password"
@@ -78,20 +106,26 @@ export default function Header() {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-600"
+                                            required
                                         />
+
                                         <button
                                             type="submit"
                                             className="bg-orange-400 text-white px-3 py-2 rounded hover:bg-orange-600 transition"
                                         >
                                             Login
                                         </button>
+
+                                        {/* Кнопка Register которая ведет на страницу регистрации */}
                                         <button
                                             type="button"
-                                            onClick={handleRegister}
-                                            className="bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 transition"
-                                            >
-                                            <Link to="/register">Register</Link>
+                                            onClick={handleRegisterClick}
+                                            className="text-center bg-gray-200 text-gray-800 px-3 py-2 rounded hover:bg-gray-300 transition"
+                                        >
+                                            Register
                                         </button>
+
+                                        {error && <p className="text-sm text-red-600 text-center">{error}</p>}
                                     </form>
                                 </div>
                             )}

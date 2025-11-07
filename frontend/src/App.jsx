@@ -1,3 +1,4 @@
+// src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import NavBar from "./components/NavBar";
@@ -8,10 +9,9 @@ import Breeds from "./pages/Breeds";
 import MyPets from "./pages/MyPets";
 import Adoption from "./pages/Adoption";
 import Training from "./pages/Training";
-
+import Register from "./pages/Registration";
 
 import background from "./assets/background_main.png";
-import Register from "./pages/Registration.jsx";
 
 export default function App() {
     return (
@@ -35,7 +35,7 @@ export default function App() {
                             <Route path="/mypets" element={<MyPets />} />
                             <Route path="/adoption" element={<Adoption />} />
                             <Route path="/training" element={<Training />} />
-                            <Route path="register" element={<Register />} />
+                            <Route path="/register" element={<Register />} />
                         </Routes>
                     </main>
                     <Footer />
