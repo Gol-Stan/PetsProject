@@ -1,7 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from watchfiles import awatch
+
 from app import models, schemas
 from app.models import Breed
+from app.services.breed_cache import breed_cache
 
 """ Breed creation """
 async def create_breed(db: AsyncSession, breed_in: schemas.breed.BreedCreate):
@@ -17,6 +20,8 @@ async def create_breed(db: AsyncSession, breed_in: schemas.breed.BreedCreate):
     db.add(new_breed)
     await db.commit()
     await db.refresh(new_breed)
+
+    await breed_cache.invalidate_all_breeds()
 
     return new_breed
 
@@ -37,12 +42,32 @@ async def update_breed(db: AsyncSession, breed_id: int, breed_in: schemas.breed.
 
     await db.commit()
     await db.refresh(breed)
+
+    await breed_cache.invalidate_breed(breed_id)
+    await breed_cache.invalidate_all_breeds()
+
     return breed
 
 """ Get breed by id """
 async def get_breed_by_id(db: AsyncSession, breed_id: int):
+    cached_breeds = await breed_cache.get_breed_by_id()
+    if cached_breeds:
+        return cached_breeds
+
     result = await db.execute(select(models.Breed).where(models.Breed.id == breed_id))
-    return result.scalars().first()
+    breed =  result.scalar_one_or_none()
+
+    if breed:
+        breeds_data = {
+                "id": breed.id,
+                "name": breed.name,
+                "description": breed.description,
+                "img": breed.img
+                }
+        await breed_cache.set_breed(breed_id, breeds_data)
+        return breeds_data
+
+    return None
 
 
 """ Delete breed """
@@ -58,9 +83,31 @@ async def delete_breed(db: AsyncSession, breed_id: int):
 
     await db.delete(breed)
     await db.commit()
+
+    await breed_cache.invalidate_breed(breed_id)
+    await breed_cache.invalidate_all_breeds()
+
     return breed
 
 """ Show all breeds """
 async def get_all_breeds(db: AsyncSession):
+    cached_breeds = await breed_cache.get_all_breeds()
+    if cached_breeds:
+        return cached_breeds
+
     result = await db.execute(select(Breed))
     return result.scalars().all()
+
+    breeds_data = [
+        {
+            "id": breed.id,
+            "name": breed.name,
+            "description": breed.description,
+            "img": breed.img
+        }
+        for breed in breeds
+    ]
+
+    await breed_cache.set_all_breeds(breeds_data)
+    return breeds_data
+
