@@ -43,3 +43,10 @@ async def delete_breed(breed_id: int, db: AsyncSession = Depends(get_db), admin_
         return {"message": f"Breed with id {breed_id} deleted"}
     except ValueError as err:
         raise HTTPException(status_code=400, detail=str(err))
+
+
+@router.delete("/cache/invalidate")
+async def invalidate_breed_cache(admin_user = Depends(get_current_admin)):
+    from app.services.breed_cache import breed_cache
+    await breed_cache.invalidate_all_breeds()
+    return {"message": "Breed cache invalidated"}
