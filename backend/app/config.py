@@ -21,8 +21,15 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+    SMTP_SERVER: str = "smtp.gmail.com"
+    SMTP_PORT: str = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_EMAIL: str = "noreply@petworld.com"
+
     BREED_CACHE_TTL: int = 3600
     REDIS_URL: str = "redis://localhost:6379/0"
+    CELERY_RESULT_BACKEND: str = "redis://localhost:6379/0"
 
     MODE: str = "DEV"
 
