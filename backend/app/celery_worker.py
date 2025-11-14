@@ -30,7 +30,7 @@ celery_app.conf.update(
 )
 
 @celery_app.task(bind=True, max_reties=3)
-def add(self, to_email: str, subject: str, message: str, is_html: bool = False):
+def send_email(self, to_email: str, subject: str, message: str, is_html: bool = False):
     try:
         msg = MIMEMultipart()
         msg["From"] = settings.FROM_EMAIL
@@ -55,3 +55,36 @@ def add(self, to_email: str, subject: str, message: str, is_html: bool = False):
         logger.error(f"Failed to send email to {to_email}: {str(e)}")
         raise self.retry(countdown=60, exc=e)
 
+
+@celery_app.task
+def send_welcome_message(user_email: str, user_name: str):
+    subject = "Welcome to PetZone"
+
+    html_message = f"""
+    <html>
+        <body>
+            <h2>Welcome to PetWorld, {user_name}!</h2>
+            <p>Thank you for registering with PetWorld. We're excited to have you as part of our community!</p>
+            <p>With your account, you can:</p>
+            <ul>
+                <li>Browse dog breeds and their characteristics</li>
+                <li>Manage your pets in your personal cabinet</li>
+                <li>Learn about pet training and adoption</li>
+            </ul>
+            <p>If you have any questions, feel free to contact our support team.</p>
+            <br>
+            <p>Best regards,<br>The PetWorld Team</p>
+        </body>
+    </html>
+    """
+
+    text_message = f"""
+    Welcome to PetZone, {user_name}
+    Thank you for registration! """
+
+    return send_email.delay(
+        to_email=user_email,
+        subject=subject,
+        message=html_message,
+        is_html=True
+    )
