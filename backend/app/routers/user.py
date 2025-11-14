@@ -4,6 +4,7 @@ from jose import JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import schemas, models, crud
+from app.celery_worker import send_welcome_message
 from app.crud import user as crud_user
 from app.database import AsyncSessionLocal
 from app.utils.jwt_handler import create_access_token, decode_token
@@ -19,7 +20,17 @@ async def register(user_in: schemas.user.UserCreate, db: AsyncSession = Depends(
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    return await crud_user.create_user(db, user_in)
+    user = await crud_user.create_user(db, user_in)
+
+    try:
+        send_welcome_message.delay(
+            user_email=user.email,
+            user_name=user.name
+        )
+    except Exception as e:
+        print(f"Failed welcome email {e}")
+
+    return user
 
 """ Login """
 @router.post("/login", response_model=schemas.user.Token)
